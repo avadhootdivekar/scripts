@@ -1,0 +1,5 @@
+set title "New plot"
+set output "NewPlot.png"
+plot x,sin(x)
+
+

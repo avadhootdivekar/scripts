@@ -1,0 +1,9 @@
+set pm3d
+set title "Test Plot 2"
+set xrange [-5:5]
+set yrange [-5:5]
+
+func(x,y) = x+y
+
+set output "Test2.png"
+splot  '++' using  1:2:(func($1,$2)):(func($1,$2)) with pm3d
