@@ -1,0 +1,17 @@
+version: "3"
+services: 
+  dev-env:
+    image: build-env-scripts:0.1
+    networks: 
+      shared_host 
+    volumes:
+      - ./:/workspace/
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+    working_dir: /workspace/
+    environment:
+      DISPLAY     : $DISPLAY
+    tty: true
+networks:
+  shared_host:
+    external: true
+    name: "hostNet"
