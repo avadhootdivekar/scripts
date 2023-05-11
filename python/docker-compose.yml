@@ -1,0 +1,17 @@
+version : "3"
+
+services: 
+  dev-env:
+    image: python:$BUILD_VER
+    network_mode: "host"
+    volumes:
+      - ./:$WORKSPACE_DIR
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+    working_dir: $WORKSPACE_DIR
+    environment:
+      DISPLAY     : $DISPLAY
+    # tty: true
+    # stdin_open: true
+    # healthcheck:
+    #   disable: true
+    entrypoint: ["bash" ,"-c", "sleep infinity"]
