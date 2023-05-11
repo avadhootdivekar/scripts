@@ -23,7 +23,9 @@ get_build_shell :
 	@echo ${SEP} get_build_shell
 	docker build -t python:${BUILD_VER} ./ ;
 	xhost +local: ;
-	docker run -it --name="scripts-python" --network=host -w ${WORKSPACE_DIR} -v `pwd`:${WORKSPACE_DIR} python:${BUILD_VER} /bin/bash
+	# docker run -it --name="scripts-python" --network=host -w ${WORKSPACE_DIR} -v `pwd`:${WORKSPACE_DIR} python:${BUILD_VER} /bin/bash
+	docker-compose up -d;
+	docker exec -it python_dev-env_1 bash 
 
 
 build : 
