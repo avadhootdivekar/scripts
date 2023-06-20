@@ -2,16 +2,11 @@ version: "3"
 services: 
   dev-env:
     image: build-env-scripts:0.1
-    networks: 
-      shared_host 
+    network_mode:  "host"
     volumes:
-      - ./:/workspace/
+      - $WORKSPACE_DIR_HOST:$GO_WORKSPACE_DIR
       - /tmp/.X11-unix/:/tmp/.X11-unix/
-    working_dir: /workspace/
+    working_dir: $GO_WORKSPACE_DIR
     environment:
       DISPLAY     : $DISPLAY
-    tty: true
-networks:
-  shared_host:
-    external: true
-    name: "hostNet"
+    entrypoint: ["bash" ,"-c", "sleep infinity"]

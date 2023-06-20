@@ -1,3 +1,9 @@
+
+export PROJECT_ROOT = $(shell pwd)
+export GO_WORKSPACE_DIR:=/usr/src/app
+export WORKSPACE_DIR_HOST:=${PROJECT_ROOT}
+
+
 .phony: all clean build
 
 SP======================================================================================================================\n
@@ -14,7 +20,8 @@ build:
 shell:
 	@echo ${SP} shell
 	docker build -t build-env-scripts:0.1 ./  ;											\
-	docker-compose up;				
+	docker-compose up -d;		
+	docker exec -it go_dev-env_1 bash ;		
 
 env: 
 	@echo ${SP} env
