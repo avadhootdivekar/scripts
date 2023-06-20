@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 )
 
 const (
@@ -13,6 +14,7 @@ const (
 	ERR_INVALID_PARAMS = "Invalid parameters"
 	BYTESIZE           = 8
 	MAX_BITWIDTH       = 32
+	BUFF_SIZE		= 16
 )
 
 var maskMap = map[int]int{
@@ -34,7 +36,7 @@ type s1 struct {
 }
 
 func run() {
-	B()
+
 }
 
 func A() {
@@ -46,13 +48,24 @@ func A() {
 	fmt.Printf("err : %v , s : %v \n", err, s)
 }
 
-func B() {
-	pos := 7
-	length := 6
-	value := int(0xA)
+func B(pos int, length int, value int) (value_out int , err error){
 	bs := []byte{0xFF, 0xFF, 0xFF}
 	bs2, pos2, err := SerializeField(value, pos, length, bs)
-	fmt.Printf("err : %v , pos2 : %v , bs2 : %v ", err, pos2, bs2)
+	fmt.Printf("err : %v , pos2 : %v , bs2 : %v \n", err, pos2, bs2)
+	value , pos_out , err := DeSerializeBitField(pos , length , bs2)
+	log("value : %v , pos_out : %v , err : %v \n", value , pos_out , err)
+	value_out=value
+	return value_out , err
+}
+
+
+func C ()(){
+	// bitset.LittleEndian()
+	// b := bitset.BitSet.From(0)
+	// pos := 7
+	// length := 6
+	// value := int(0xA)
+	// Serialize(value , pos , length , b)
 }
 
 func DeSerializeBitField(position int, length int, bs []byte) (value int, position_out int, err error) {
@@ -60,19 +73,31 @@ func DeSerializeBitField(position int, length int, bs []byte) (value int, positi
 	if !(((len(bs) * BYTESIZE) >= (position + length)) && (length > 0) && (length < MAX_BITWIDTH)) {
 		return -1, position_out, errors.New(ERR_INVALID_PARAMS)
 	}
-	value_bs := make([]byte, 8)
-	_ = maskMap[length]
-	_ = position % BYTESIZE
-	fb := position / BYTESIZE
-	value = 0
-	target_lb := (length - 1) / BYTESIZE
+	local_buffer := make([]byte , BUFF_SIZE)
+	copy(local_buffer , bs)
+	log("pos : %v , length : %v " , position , length)
+	target_fb := 0
+	source_fb := position/BYTESIZE
 	source_lb := (position + length - 1) / BYTESIZE
-	value_bs[fb] = bs[fb] & value_bs[0]
-	value_bs[target_lb] = bs[source_lb] & value_bs[target_lb]
-	for i := 0; i < (length); i++ {
-		value_bs[fb+i] = bs[i]
+	target_lb := length / BYTESIZE
+	// local_buffer[target_fb] , err = UnMaskFirstByte(uint8(position) , uint8(length) , bs[source_fb])
+	// log("firstbyte err : %v , local_buffer : %v \n" , err , local_buffer)
+	// local_buffer[target_lb] , err = UnMaskLastByte(uint8(position) , uint8(length) , bs[source_lb])
+	// log("lastbyte err : %v , local_buffer : %v \n" , err , local_buffer)
+	log("source_lb : %v " , source_lb)
+	for i:= 0 ; i< (target_lb - target_fb ) ; i++ {
+		local_buffer[i] = bs[source_fb + i]
 	}
-	err = binary.Read(bytes.NewReader(value_bs[:]), binary.LittleEndian, &value)
+	position_out = position + length
+	mask := maskMap[length]
+	var value_local uint64
+	err = binary.Read(bytes.NewReader(local_buffer[:]), binary.LittleEndian, &value_local)
+	log("\nvalue : %v \n" , value_local)
+	value= int(value_local)
+	value = value >> (position % BYTESIZE)
+	value = value & mask
+	// value = value & mask
+	
 	return value, position_out, err
 }
 
@@ -115,10 +140,8 @@ func SerializeField(value int, position int, length int, bs []byte) (bs_out []by
 }
 
 func MaskFirstByte(position uint8 , length uint8 , in byte , value byte)(out byte , err error){
-	out = in
-	mask := byte(0)
 	position = position % BYTESIZE
-	mask = byte(maskMap[int(length)])
+	mask := byte(maskMap[int(length)])
 	mask = mask << position
 	out = in & (^mask)
 	out = out |  (value)
@@ -146,6 +169,32 @@ func MaskLastByte(position uint8 , length uint8 , in byte , value byte)(out byte
 	return out, nil
 }
 
+func UnMaskFirstByte(position uint8, length uint8 , in byte)(out byte , err error){
+	position = position % BYTESIZE
+	mask := byte(maskMap[int(length)])
+	mask = mask << position
+	out = in & mask
+	return out , nil
+}
+
+func UnMaskLastByte (position uint8, length uint8 , in byte)(out byte , err error){
+	if ( (position / BYTESIZE) != ( (position+length-1)/BYTESIZE)){
+		length_updated := (position + length ) % BYTESIZE
+		mask := byte(maskMap[int(length_updated)])
+		mask = mask << 0 
+		out = in & mask
+		return out , nil
+	} 
+	return in , errors.New(ERR_INVALID_PARAMS)
+}
+
+// func Serialize(value int , position int , length int, bs bitset.BitSet) (bs_out bitset.BitSet, position_out int, err error) {
+// 	v1 := bitset.BitSet.From([]uint64{uint64(value)})
+// }
+
+
 func log (s string, args ... interface{}) {
 	fmt.Printf(s, args...)
 }
+
+
