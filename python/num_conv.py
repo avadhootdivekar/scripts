@@ -3,6 +3,7 @@ import argparse
 class converter():
     def __init__(self) -> None:
         self.d = " "
+        self.prefix =  ""
         
 
     def b2h(self, s: str):
@@ -13,7 +14,16 @@ class converter():
         for i in numList:
             if len(str(i)) > 0:
                 # print(f"i : {i}")
-                num = int(i, 2)
+                val = None
+                if self.prefix in str(i): 
+                    val = str(i).split(self.prefix)
+                    if len(val) == 1:
+                        val = val[0]
+                    else :
+                        val = val[1]
+                else : 
+                    val = str(i)
+                num = int(str(val), 2)
                 h += f" {hex(num)[2:]}"
         print(f"hex output : {h}")
         return h
@@ -52,6 +62,8 @@ def configParser():
         "--s", type=str, required=False, help="String to be parsed")
     parser.add_argument(
         "-d", type=str, required=False, help="Delimeter")
+    parser.add_argument(
+        "--prefix", type=str, required=False, help="Prefix of each number")
     args = parser.parse_args()
     return args
 
@@ -60,6 +72,7 @@ def main():
     print(f"args :  {args}")
     conv = converter()
     conv.d = args.d
+    conv.prefix = args.prefix
     getattr(conv , args.func)(args.s)
     return
 
