@@ -112,19 +112,23 @@ def configParser(conv:converter):
     parser.add_argument(
         "--func", type=str, required=False, help="Function name to be used for parsing")
     parser.add_argument(
-        "--s", type=str, required=False, help="String to be parsed")
+        "-s" , "--string", type=str, required=False, help="String to be parsed")
     parser.add_argument(
-        "-d", type=str, required=False, help="Delimeter")
+        "-d", "--in-delimeter", type=str, required=False, help="Delimeter")
     parser.add_argument(
-        "--in-prefix", type=str, required=False, help="Prefix of each number in the input")
+        "-p","--in-prefix", type=str, required=False, help="Prefix of each number in the input")
     parser.add_argument(
         "--out-prefix", type=str, required=False, help="Prefix of each number in the output")
     parser.add_argument(
         "--out-delimeter", type=str, required=False, help="Delimeter in the output")
     parser.add_argument(
-        "--in-base", type=str, required=False, help="Base of input (0-36)")
+        "-b","--in-base", type=str, required=False, help="Base of input (0-36)")
     parser.add_argument(
         "--out-base", type=str, required=False, help="Base of output (0-36)")
+    parser.add_argument(
+        "-i","--in-file", type=str, required=False, help="Base of output (0-36)")
+    parser.add_argument(
+        "-o","--out-file", type=str, required=False, help="Base of output (0-36)")
     args = parser.parse_args()
     conv.d = getattr(args, "d" , " ")
     conv.inPrefix = getArg(args, "in_prefix" , " ")
@@ -132,7 +136,13 @@ def configParser(conv:converter):
     conv.outDel = getattr(args, "out_delimeter" , "")
     conv.inBase = int(getArg(args, "in_base" , 10))
     conv.outBase = int(getArg(args, "out_base" , 10))
-    print( f"argparse : conv : {conv} \n" )
+    print( f"argparse : {args} ,\n  conv : {conv} \n" )
+    inFile = getArg(args , "in_file", None)
+    if inFile !=None : 
+        with open(inFile , "r" ) as file:
+            args.string = file.read()
+            args.string =  args.string.replace('\n' , args.in_delimeter)
+    inFile = getArg(args , "in_file", None)
     return args
 
 def main():
@@ -140,7 +150,10 @@ def main():
     args = configParser(conv)
     print(f"args :  {args} , conv : {conv} \n")
     # getattr(conv , args.func)(args.s)
-    conv.conv(inBase=conv.inBase , outBase=conv.outBase , input=args.s)
+    output = conv.conv(inBase=conv.inBase , outBase=conv.outBase , input=args.string)
+    if args.out_file != None : 
+        with open(args.out_file , "w+") as file:
+            file.write(output)
     return
 
 
