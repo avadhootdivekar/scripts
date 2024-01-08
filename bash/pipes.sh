@@ -1,15 +1,27 @@
 #!/bin/bash
 
 pid=-1
+input=0
+
+send()
+{
+    v=`echo "$@"|base64`
+    echo $v>input
+}
 
 main()
 {
     mkfifo input 
     ./loop.sh < input &
     pid=$!
-    echo "Text 12345" > input
+    v="Text 
+    12345
+    " 
+    send "$v"
+    # vb=`echo "$v"|base64 `
+    # echo $vb > input
     sleep 5
-    echo "Text 109876" > input
+    send "Text 109876" 
     sleep 2 
 }
 
