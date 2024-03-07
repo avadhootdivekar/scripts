@@ -1,0 +1,22 @@
+{
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"context": "../"
+	},
+	"capAdd": [
+		"SYS_PTRACE"
+	],
+	"securityOpt": [
+		"seccomp=unconfined"
+	],
+	"postCreateCommand": " echo Created. ",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vscjava.vscode-java-debug",
+				"redhat.vscode-yaml"
+			]
+		}
+	}
+}
