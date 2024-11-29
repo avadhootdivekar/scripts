@@ -20,6 +20,7 @@ export WCODE=/mnt/c/Users/avadh/code/
 export CODE=/home/avadhoot/mounted/code
 export PATH=$PATH:/usr/local/go/bin
 export PATH_ATMOS_KUBERNETES=$CODE
-source ~/.helper.sh
 alias k=kubectl
 source <(kubectl completion bash)
+source ~/.helper.sh
+alias mycmd='source ~/.helper.sh'
