@@ -29,11 +29,25 @@ help(){
     echo "init_profile <profile_name> : Create a new minikube profile and use it"
     echo "use_profile <profile_name> : Use an existing minikube profile"
 }
-main() {
-    args=${@:2}
-    echo "Arguments (2:) to main : $args"
+apply_this_helper(){
+    cp ./.helper.sh $HOME/.helper.sh
+    source $HOME/.helper.sh
+}
 
-    $1 $args
+copy_exo_bins_to_gsite(){
+    pushd $EXO_REPO/SatOS_BIN/truetwin_software/
+    docker cp ./ e2e-gsite-1:/tmp/bins
+    docker exec e2e-gsite-1 bash -c "chmod +x /tmp/bins/*"
+    popd
+}
+
+main() {
+    args=${@:3}
+    echo "Arguments to main : $args"
+    echo "Environment file : $1"
+    source $1 
+    echo "Function to run : $2"
+    $2 $args
 }
 echo "Script arguments : $@"
 main $@
