@@ -35,7 +35,7 @@ apply_this_helper(){
 }
 
 copy_exo_bins_to_gsite(){
-    pushd $EXO_REPO/SatOS_BIN/truetwin_software/
+    pushd $EXO_REPO/SatOS_BIN/truetwin_software/janus2_truetwin
     docker cp ./ e2e-gsite-1:/tmp/bins
     docker exec e2e-gsite-1 bash -c "chmod +x /tmp/bins/*"
     popd
