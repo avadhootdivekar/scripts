@@ -6,7 +6,7 @@ init_profile() {
     export MINIKUBE_PROFILE=$1
     cp $HOME/.kube/config $HOME/.kube/config-$MINIKUBE_PROFILE
     export KUBECONFIG=$HOME/.kube/config-$MINIKUBE_PROFILE
-    minikube start
+    minikube start --cpu 8 --memory 6144
 }
 rm_container(){
     __cont=$1
