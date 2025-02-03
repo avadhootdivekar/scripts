@@ -1,6 +1,12 @@
+mod packageA;
+use packageA::{testPackageA , forloop, ifelse};
+
 fn main() {
     println!("Hello, world!");
-    A()
+    A();
+    testPackageA();
+    forloop();
+    ifelse();
 }
 
 fn 

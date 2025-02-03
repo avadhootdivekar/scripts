@@ -18,9 +18,6 @@ get_host_dependancies:
 	sudo apt-get update;
 	sudo apt-get install -y docker.io 
 
-build : 
-	@echo ${SEP} build
-
 test : 
 	@echo ${SEP} test
 
@@ -32,8 +29,12 @@ get_build_shell :
 	docker-compose up -d;
 	docker exec -it ${CONTAINER_INSTANCE_NAME} bash 
 
+cargobuild:
+	cd ./hello-rust; cargo build ; cd ../''
 
 build : 
 	@echo ${SEP} build
+	cd ./hello-rust/src; rustc main.rs; cd ../.. ; 
 
-
+run:
+	./hello-rust/target/debug/hello-rust
