@@ -1,9 +1,12 @@
 mod packageA;
 mod packageB;
+mod tokenchecker;
+
 use std::{thread};
 use std::sync::mpsc;
 use packageA::{testPackageA , forloop, ifelse};
 use packageB::{write_to_channel, read_from_channel};
+use tokenchecker::checker;
 
 fn main() {
     println!("Hello, world!");
