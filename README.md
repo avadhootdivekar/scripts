@@ -15,7 +15,7 @@ python3 num_conv.py  -d " " --out-delimeter="," --in-base=10 --out-base="2"  --o
 ## helper.sh
 This is a helper script which anyone can easily pull and start using. 
 Use following command to pull and load the helper script. 
-#### WARNING : Please understand what you rae doing. Following command will download a file and source it.
+#### WARNING : Please understand what you are doing. Following command will download a file and source it.
 ```
 wget https://raw.githubusercontent.com/avadhootdivekar/scripts/refs/heads/master/bash/.helper.sh -O ~/.helper.sh && source ~/.helper.sh
 ```
